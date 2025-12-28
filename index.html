@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <title>🌌 COSMOS</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Russo+One&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Russo+One&family=Share+Tech+Mono&display=swap"
+  rel="stylesheet">
 
 <style>
-/* ────────────────────────────────────────────────────────────────
-   Base styles – unchanged from the original template
-   ──────────────────────────────────────────────────────────────── */
+/* ───────────────────── Base styles ───────────────────── */
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
   font-family:'Poppins',sans-serif;
@@ -25,7 +26,7 @@ body{
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
   animation:logoGlow 3s infinite alternate;letter-spacing:2px;
 }
-@keyframes logoGlow{0{text-shadow:0 0 8px #00f5d4,0 0 15px #7b2ff7;}100{text-shadow:0 0 20px #f72585,0 0 35px #7b2ff7;}}
+@keyframes logoGlow{0{box-shadow:0 0 8px #00f5d4,0 0 15px #7b2ff7;}100{box-shadow:0 0 20px #f72585,0 0 35px #7b2ff7;}}
 .subtitle{font-size:1rem;font-family:'Share Tech Mono',monospace;color:#cbd5e1;letter-spacing:2px;opacity:.9;margin-top:5px;}
 
 /* ───────────────────── Grid ───────────────────── */
@@ -101,7 +102,31 @@ body{
 }
 .share-btn:hover{color:#ff6ec4;}
 
-/* ───────────────────── Overlay ───────────────────── */
+/* ───────────────────── Fullscreen icon & media container ───────────────────── */
+.media-container{
+  position:relative;
+}
+.media-container .fullscreen-icon{
+  position:absolute;
+  top:8px; right:8px;
+  background:rgba(0,0,0,.5);
+  color:white;
+  border-radius:50%;
+  width:28px;height:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1rem;
+  cursor:pointer;
+}
+.media-container img,
+.media-container video,
+.media-container embed,
+.media-container iframe{
+  width:100%;height:auto;display:block;border-radius:15px;
+}
+
+/* ───────────────────── Overlay (for website) ───────────────────── */
 #overlay{
   position:fixed;top:0;left:0;right:0;bottom:0;
   background:rgba(0,0,0,.95);
@@ -113,17 +138,42 @@ body{
 #overlay .close-btn{
   position:absolute;top:15px;right:20px;
   background:rgba(255,255,255,.1);
-  color:#fff;
-  border:2px solid #fff;
-  border-radius:50%;
-  font-size:1.2rem;
-  width:40px;height:40px;
+  color:#fff;border:2px solid #fff;border-radius:50%;
+  font-size:1.2rem;width:40px;height:40px;
   cursor:pointer;
   display:flex;justify-content:center;align-items:center;
   transition:all .3s ease;
   z-index:10;
 }
 #overlay .close-btn:hover{
+  background:rgba(255,255,255,.3);
+  transform:rotate(90deg);
+}
+
+/* ───────────────────── Fullscreen overlay (for media) ───────────────────── */
+#fullScreenOverlay{
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,.95);
+  display:none;
+  z-index:9999;
+  justify-content:center;align-items:center;
+  flex-direction:column;
+}
+#fullScreenOverlay iframe{
+  width:90%;height:90%;border:none;
+}
+#fullScreenOverlay #fullScreenCloseBtn{
+  position:absolute;top:15px;right:20px;
+  background:rgba(255,255,255,.1);
+  color:#fff;border:2px solid #fff;border-radius:50%;
+  font-size:1.5rem;width:40px;height:40px;
+  cursor:pointer;
+  display:flex;justify-content:center;align-items:center;
+  transition:all .3s ease;
+  z-index:10;
+}
+#fullScreenOverlay #fullScreenCloseBtn:hover{
   background:rgba(255,255,255,.3);
   transform:rotate(90deg);
 }
@@ -190,7 +240,8 @@ body{
   right:20px;bottom:80px;
   font-size:2rem;
   background:none;border:none;
-  cursor:pointer;z-index:999;
+  cursor:pointer;
+  z-index:999;
 }
 
 /* ───────────────────── Feedback Modal ───────────────────── */
@@ -234,8 +285,21 @@ footer{
   0{text-shadow:0 0 5px #7b2ff7;}
   100{text-shadow:0 0 15px #f72585;}
 }
+
+/* ───────────────────── Website‑name highlight ───────────────────── */
+.website-name{
+  font-weight:600;
+  font-size:1rem;
+  color:#e0e0e0;
+  margin:4px 8px 2px 8px;
+}
+.highlight-label{
+  color:#ff6ec4;
+  font-weight:700;
+}
 </style>
 </head>
+
 <body>
 
 <!-- ───────────────────── Header ───────────────────── -->
@@ -247,7 +311,7 @@ footer{
 <!-- ───────────────────── Search & Publish ───────────────────── -->
 <div id="searchContainer">
   <button id="backBtn">← Back</button>
-  <input type="text" id="searchInput" placeholder="Search by colour...">
+  <input type="text" id="searchInput" placeholder="Search by website name…">
   <button id="searchBtn">Search</button>
   <span id="arrowBtn">→</span>
   <div id="arrowOptions">
@@ -260,10 +324,16 @@ footer{
 <!-- ───────────────────── Grid ───────────────────── -->
 <div id="gridContainer"></div>
 
-<!-- ───────────────────── Overlay ───────────────────── -->
+<!-- ───────────────────── Overlay (web site) ───────────────────── -->
 <div id="overlay">
   <button class="close-btn">&times;</button>
   <iframe src="" id="iframe" allow="fullscreen;clipboard-write;camera;microphone;"></iframe>
+</div>
+
+<!-- ───────────────────── Fullscreen overlay (media) ───────────────────── -->
+<div id="fullScreenOverlay">
+  <button id="fullScreenCloseBtn">&times;</button>
+  <iframe id="fullScreenFrame" allowfullscreen></iframe>
 </div>
 
 <!-- ───────────────────── Floating Chat ───────────────────── -->
@@ -322,6 +392,49 @@ async function fetchData(){
   }
 }
 
+// ---------- Helper for archive.org URLs ----------
+function getArchiveEmbedUrl(url){
+  if (!url.includes('archive.org')) return url;
+  const match = url.match(/archive\.org\/(?:details|download|stream)\/([^/]+)?/);
+  if (match && match[1]) {
+    return `https://archive.org/embed/${match[1]}`;
+  }
+  // Fallback – simply return the original URL
+  return url;
+}
+
+// ---------- Render image ----------
+function renderImage(url){
+  if(!url) return '';
+  const src = getArchiveEmbedUrl(url);
+  const isArchive = url.includes('archive.org');
+  const mediaTag = isArchive ?
+    `<embed src="${src}" style="width:100%;height:auto;border:0;margin:0;border-radius:15px;">` :
+    `<img src="${src}" alt="image">`;
+  return `<div class="media-container">
+            ${mediaTag}
+            <span class="fullscreen-icon" data-url="${src}" title="Fullscreen">⤢</span>
+          </div>`;
+}
+
+// ---------- Render video ----------
+function renderVideo(url, id){
+  if(!url) return '';
+  const src = getArchiveEmbedUrl(url);
+  const isArchive = url.includes('archive.org');
+  const attrs = id===1 ? 'muted autoplay loop' : '';
+  let mediaTag;
+  if(isArchive){
+    mediaTag = `<iframe src="${src}" allowfullscreen style="width:100%;height:200px;margin-top:6px;border-radius:15px;"></iframe>`;
+  }else{
+    mediaTag = `<video src="${url}" ${attrs} controls style="border-radius:15px;margin-top:6px;"></video>`;
+  }
+  return `<div class="media-container">
+            ${mediaTag}
+            <span class="fullscreen-icon" data-url="${src}" title="Fullscreen">⤢</span>
+          </div>`;
+}
+
 // ---------- Render grid ----------
 function displayData(data){
   const container = document.getElementById('gridContainer');
@@ -338,26 +451,23 @@ function displayData(data){
 
     const gridItem = document.createElement('div');
     gridItem.className = index===0 ? 'grid-item first' : 'grid-item other';
-    if(index!==0 && item.colour) gridItem.style.background = item.colour;
     if(index!==0 && !item.video_url) gridItem.classList.add('shrink');
 
     let html = '';
-    if(item.image_url) html += `<img src="${item.image_url}" alt="image">`;
-    if(item.stars&&item.stars>0){
+    html += renderImage(item.image_url);          // image + fullscreen icon
+    if(item.website_name){
+      html += `<div class="website-name"><span class="highlight-label">website_name</span>: ${item.website_name}</div>`;
+    }
+    if(item.stars && item.stars>0){
       html += '<div class="stars">';
       for(let i=0;i<item.stars;i++) html += `<span class="star">&#9733;</span>`;
       html += '</div>';
     }
-
     html += `<div class="username">${item.username}${item.id?` (${item.id})`:""}</div>`;
     if(item.official_page) html += `<div class="official_page">${item.official_page}</div>`;
     html += `<div class="description">${item.description}</div>`;
     if(item.others) html += `<div class="others">${item.others}</div>`;
-
-    if(item.video_url){
-      const attrs = item.id===1? 'muted autoplay loop' : '';
-      html += `<video src="${item.video_url}" ${attrs} controls style="border-radius:15px;margin-top:6px;"></video>`;
-    }
+    html += renderVideo(item.video_url, item.id);  // video + fullscreen icon
 
     html += `<button class="open-btn">Open</button>`;
     html += `<button class="share-btn" title="Share">🔗</button>`;
@@ -392,7 +502,7 @@ function displayData(data){
   });
 }
 
-// ---------- Overlay ----------
+// ---------- Overlay for website ----------
 function openOverlay(url){
   const overlay=document.getElementById('overlay');
   const iframe=document.getElementById('iframe');
@@ -406,6 +516,26 @@ function closeOverlay(){
   overlay.style.display='none';
 }
 document.querySelector('#overlay .close-btn').addEventListener('click',closeOverlay);
+
+// ---------- Fullscreen overlay ----------
+const fullScreenOverlay = document.getElementById('fullScreenOverlay');
+const fullScreenFrame = document.getElementById('fullScreenFrame');
+const fullScreenCloseBtn = document.getElementById('fullScreenCloseBtn');
+
+function openFullScreen(src){
+  fullScreenFrame.src = src;
+  fullScreenOverlay.style.display = 'flex';
+}
+fullScreenCloseBtn.addEventListener('click', ()=>{
+  fullScreenFrame.src = '';
+  fullScreenOverlay.style.display = 'none';
+});
+document.addEventListener('click', e=>{
+  if(e.target.classList.contains('fullscreen-icon')){
+    const src = e.target.dataset.url;
+    if(src) openFullScreen(src);
+  }
+});
 
 // ---------- Search ----------
 const backBtn=document.getElementById('backBtn');
@@ -421,7 +551,7 @@ document.getElementById('searchBtn').addEventListener('click',()=>{
     backBtn.style.display='none';
     return;
   }
-  const filtered=masterData.filter(it=>it.colour&&it.colour.toLowerCase().includes(kw));
+  const filtered=masterData.filter(it=>it.website_name && it.website_name.toLowerCase().includes(kw));
   displayData(filtered);
   backBtn.style.display='inline-block';
   hideArrowOptions();
