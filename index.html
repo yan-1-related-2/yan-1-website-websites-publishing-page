@@ -2,365 +2,496 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🌌 COSMOS</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Russo+One&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-
-body {
-  font-family: 'Poppins', sans-serif;
-  background: radial-gradient(circle at 20% 20%, #0f2027, #203a43, #2c5364);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #fff;
-  min-height: 100vh;
-  overflow-x: hidden;
+/* ────────────────────────────────────────────────────────────────
+   Base styles – unchanged from the original template
+   ──────────────────────────────────────────────────────────────── */
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Poppins',sans-serif;
+  background:radial-gradient(circle at 20% 20%,#0f2027,#203a43,#2c5364);
+  display:flex;flex-direction:column;align-items:center;color:#fff;
+  min-height:100vh;overflow-x:hidden;
 }
 
-/* 🌌 Title and Logo */
-.header {
-  text-align: center;
-  margin: 2rem 0 1rem;
+/* ───────────────────── Header ───────────────────── */
+.header{ text-align:center;margin:2rem 0 1rem;}
+.logo{
+  font-family:'Russo One',sans-serif;font-size:3rem;
+  background:linear-gradient(90deg,#00f5d4,#7b2ff7,#f72585);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:logoGlow 3s infinite alternate;letter-spacing:2px;
+}
+@keyframes logoGlow{0{text-shadow:0 0 8px #00f5d4,0 0 15px #7b2ff7;}100{text-shadow:0 0 20px #f72585,0 0 35px #7b2ff7;}}
+.subtitle{font-size:1rem;font-family:'Share Tech Mono',monospace;color:#cbd5e1;letter-spacing:2px;opacity:.9;margin-top:5px;}
+
+/* ───────────────────── Grid ───────────────────── */
+#gridContainer{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:20px;
+  width:90%;max-width:1400px;
+  margin-bottom:3rem;align-items:start;
+}
+.grid-item{
+  display:flex;flex-direction:column;
+  align-items:flex-start;justify-content:flex-start;
+  border-radius:20px;overflow:hidden;
+  transition:all .4s ease;position:relative;
+  box-shadow:0 6px 15px rgba(0,0,0,.5);
+  cursor:pointer;background:#1f1c2c;padding:0;height:auto;width:100%;
+}
+.grid-item.first{
+  background:linear-gradient(135deg,#ff6ec4,#7873f5,#4ade80);
+  animation:firstGlow 3s infinite alternate;padding:10px;
+}
+@keyframes firstGlow{0{box-shadow:0 5px 20px rgba(255,110,196,.6);}100{box-shadow:0 15px 35px rgba(120,115,245,.8);}}
+.grid-item.first:hover{
+  transform:translateY(-15px)scale(1.05)rotateZ(1deg);
+  box-shadow:0 20px 40px rgba(255,110,196,.6);
+}
+.grid-item.other{
+  background:#1f1c2c;padding:8px;border-radius:15px;
+  box-shadow:0 5px 10px rgba(0,0,0,.3);
+  height:auto;width:auto;
+}
+.grid-item.other:hover{
+  transform:translateY(-6px)scale(1.02);
+  box-shadow:0 8px 20px rgba(255,255,255,.3);
+}
+.grid-item.shrink{
+  display:flex;flex-direction:column;
+  justify-content:flex-start;align-items:flex-start;
+  padding:0;height:auto;width:auto;margin:0;
+}
+.grid-item.shrink *{margin-bottom:0!important;}
+.grid-item.shrink .username,.grid-item.shrink .official_page,.grid-item.shrink .description,.grid-item.shrink .others{
+  margin:3px 8px;line-height:1.1;
+}
+.grid-item.shrink .open-btn{margin:5px 8px 6px 8px;align-self:flex-start;}
+.grid-item.shrink video{display:none!important;}
+.grid-item img,.grid-item video{
+  width:100%;height:auto;display:block;border-radius:15px;margin:0;
+}
+.stars{position:absolute;top:10px;right:10px;display:flex;gap:2px;}
+.star{
+  font-size:1rem;color:gold;
+  animation:starGlow 1.5s infinite alternate;
+}
+@keyframes starGlow{0{text-shadow:0 0 3px gold;}100{text-shadow:0 0 10px gold;}}
+.username{font-weight:700;font-size:1.05rem;color:#111;font-family:'Share Tech Mono',monospace;margin:4px 8px 2px 8px;}
+.official_page,.description,.others{font-size:.8rem;color:#111;margin:2px 8px;}
+.open-btn{
+  background:linear-gradient(90deg,#ff6ec4,#7873f5);
+  color:#fff;border:none;border-radius:10px;padding:5px 10px;
+  font-weight:600;font-size:.8rem;cursor:pointer;
+  transition:transform .3s,box-shadow .3s;margin:5px 8px 0 8px;
+  align-self:flex-start;
+}
+.open-btn:hover{
+  transform:scale(1.05);
+  box-shadow:0 5px 15px rgba(0,0,0,.6);
+}
+.share-btn{
+  background:none;border:none;color:white;
+  font-size:1rem;cursor:pointer;margin-left:5px;
+}
+.share-btn:hover{color:#ff6ec4;}
+
+/* ───────────────────── Overlay ───────────────────── */
+#overlay{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,.95);
+  display:none;
+  z-index:9999;
+  justify-content:center;align-items:center;flex-direction:column;
+}
+#overlay iframe{width:100%;height:100%;border:none;}
+#overlay .close-btn{
+  position:absolute;top:15px;right:20px;
+  background:rgba(255,255,255,.1);
+  color:#fff;
+  border:2px solid #fff;
+  border-radius:50%;
+  font-size:1.2rem;
+  width:40px;height:40px;
+  cursor:pointer;
+  display:flex;justify-content:center;align-items:center;
+  transition:all .3s ease;
+  z-index:10;
+}
+#overlay .close-btn:hover{
+  background:rgba(255,255,255,.3);
+  transform:rotate(90deg);
 }
 
-.logo {
-  font-family: 'Russo One', sans-serif;
-  font-size: 3rem;
-  background: linear-gradient(90deg,#00f5d4,#7b2ff7,#f72585);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: logoGlow 3s infinite alternate;
-  letter-spacing: 2px;
+/* ───────────────────── Search & Publish ───────────────────── */
+#searchContainer{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+  width:90%;max-width:1400px;
 }
-@keyframes logoGlow {
-  0% { text-shadow: 0 0 8px #00f5d4, 0 0 15px #7b2ff7; }
-  100% { text-shadow: 0 0 20px #f72585, 0 0 35px #7b2ff7; }
+#searchContainer input{
+  flex-grow:1;padding:8px 12px;font-size:1rem;
+  border-radius:8px;border:1px solid #444;background:#1c1c2a;color:#fff;
+}
+#searchBtn{
+  background:#ff6ec4;color:white;border:none;
+  border-radius:8px;padding:8px 14px;font-weight:600;
+  cursor:pointer;
+}
+#searchBtn:hover{filter:brightness(1.1);}
+#arrowBtn{
+  cursor:pointer;font-size:1.2rem;
+  user-select:none;
+  padding:8px 12px;background:#ff6ec4;color:white;
+  border:none;border-radius:8px;
+}
+#arrowOptions{
+  position:absolute;
+  top:calc(100% + 5px);
+  right:8px;
+  background:#222;color:white;
+  border-radius:5px;padding:5px;
+  display:none;
+  flex-direction:column;
+  z-index:5;
+}
+.arrow-option{
+  background:none;border:none;color:white;font-size:0.9rem;
+  padding:4px 6px;text-align:left;cursor:pointer;
+}
+.arrow-option:hover{background:#444;}
+#backBtn{
+  background:none;border:none;color:white;
+  font-weight:600;cursor:pointer;
+  display:none;
+  margin-right:auto; /* left‑align */
+}
+#publishBtn{
+  background:linear-gradient(90deg,#ff6ec4,#7873f5);
+  color:#fff;border:none;
+  border-radius:10px;padding:6px 12px;
+  cursor:pointer;font-weight:600;
+  margin-left:auto;
+}
+#publishBtn:hover{filter:brightness(1.1);}
+
+/* ───────────────────── Floating Chat ───────────────────── */
+.chat-btn{
+  position:fixed;
+  right:20px;bottom:80px;
+  font-size:2rem;
+  background:none;border:none;
+  cursor:pointer;z-index:999;
 }
 
-/* ✨ Subtitle */
-.subtitle {
-  font-size: 1rem;
-  font-family: 'Share Tech Mono', monospace;
-  color: #cbd5e1;
-  letter-spacing: 2px;
-  opacity: 0.9;
-  margin-top: 5px;
+/* ───────────────────── Feedback Modal ───────────────────── */
+.feedback-modal{
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,.8);
+  display:none;
+  justify-content:center;align-items:center;
+  z-index:9999;
 }
+.feedback-content{
+  background:#222;color:#fff;
+  padding:20px;border-radius:12px;text-align:center;
+  max-width:400px;width:90%;
+  position:relative;
+}
+.feedback-content p{margin-bottom:12px;}
+#countdown{font-size:2rem;margin:10px 0;}
+.close-feedback-btn{
+  position:absolute;
+  top:10px;right:10px;
+  background:none;border:none;color:white;
+  font-size:1.5rem;cursor:pointer;
+}
+.close-feedback-btn:hover{color:#ff6ec4;}
 
-/* 🌈 Responsive auto-sizing grid */
-#gridContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
-  width: 90%;
-  max-width: 1400px;
-  margin-bottom: 3rem;
-  align-items: start;
+/* ───────────────────── Footer ───────────────────── */
+footer{
+  margin-top:auto;
+  font-size:.9rem;
+  font-family:'Share Tech Mono',monospace;
+  color:#a5b4fc;
+  padding:1.5rem 0;
+  text-align:center;
+  opacity:.9;
+  letter-spacing:1px;
+  animation:footerGlow 3s infinite alternate;
 }
-
-/* 🔹 Grid items resize to content */
-.grid-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  border-radius: 20px;
-  overflow: hidden;
-  transition: all 0.4s ease;
-  position: relative;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.5);
-  cursor: pointer;
-  background: #1f1c2c;
-  padding: 0;
-  height: auto;
-  width: 100%;
-}
-
-/* 🟣 First grid (special) */
-.grid-item.first {
-  background: linear-gradient(135deg,#ff6ec4,#7873f5,#4ade80);
-  animation: firstGlow 3s infinite alternate;
-  padding: 10px;
-}
-@keyframes firstGlow {
-  0% { box-shadow: 0 5px 20px rgba(255,110,196,0.6); }
-  100% { box-shadow: 0 15px 35px rgba(120,115,245,0.8); }
-}
-.grid-item.first:hover {
-  transform: translateY(-15px) scale(1.05) rotateZ(1deg);
-  box-shadow: 0 20px 40px rgba(255,110,196,0.6);
-}
-
-/* 🟡 Other grids auto-resize */
-.grid-item.other {
-  background: #1f1c2c;
-  padding: 8px;
-  border-radius: 15px;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.3);
-  height: auto;
-  width: auto;
-}
-.grid-item.other:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 8px 20px rgba(255,255,255,0.3);
-}
-
-/* ✨ Shrink (no video) */
-.grid-item.shrink {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  padding: 0;
-  height: auto;
-  width: auto;
-  margin: 0;
-}
-.grid-item.shrink * { margin-bottom: 0 !important; }
-.grid-item.shrink .username,
-.grid-item.shrink .official_page,
-.grid-item.shrink .description,
-.grid-item.shrink .others {
-  margin: 3px 8px;
-  line-height: 1.1;
-}
-.grid-item.shrink .open-btn {
-  margin: 5px 8px 6px 8px;
-  align-self: flex-start;
-}
-.grid-item.shrink video { display: none !important; }
-
-/* 🎞️ Image & video auto-scale */
-.grid-item img,
-.grid-item video {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 15px;
-  margin: 0;
-}
-
-/* ⭐ Stars */
-.grid-item .stars {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: flex;
-  gap: 2px;
-}
-.grid-item .star {
-  font-size: 1rem;
-  color: gold;
-  animation: starGlow 1.5s infinite alternate;
-}
-@keyframes starGlow {
-  0% { text-shadow: 0 0 3px gold; }
-  100% { text-shadow: 0 0 10px gold; }
-}
-
-/* 📝 Text */
-.grid-item .username {
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: #111;
-  font-family: 'Share Tech Mono', monospace;
-  margin: 4px 8px 2px 8px;
-}
-.grid-item .official_page,
-.grid-item .description,
-.grid-item .others {
-  font-size: 0.8rem;
-  color: #111;
-  margin: 2px 8px;
-}
-
-/* 🔘 Button */
-.open-btn {
-  background: linear-gradient(90deg,#ff6ec4,#7873f5);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  padding: 5px 10px;
-  font-weight: 600;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
-  margin: 5px 8px 0 8px;
-  align-self: flex-start; 
-}
-.open-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.6);
-}
-
-/* 🕶️ Overlay */
-#overlay {
-  position: fixed;
-  top:0; left:0; right:0; bottom:0;
-  background: #000;
-  display: none;
-  z-index: 9999;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-#overlay iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-#overlay .close-btn {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  background: rgba(255,255,255,0.1);
-  color: #fff;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  font-size: 1.2rem;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.3s ease;
-  z-index: 10;
-}
-#overlay .close-btn:hover {
-  background: rgba(255,255,255,0.3);
-  transform: rotate(90deg);
-}
-
-/* 🪐 Footer */
-footer {
-  margin-top: auto;
-  font-size: 0.9rem;
-  font-family: 'Share Tech Mono', monospace;
-  color: #a5b4fc;
-  padding: 1.5rem 0;
-  text-align: center;
-  opacity: 0.9;
-  letter-spacing: 1px;
-  animation: footerGlow 3s infinite alternate;
-}
-@keyframes footerGlow {
-  0% { text-shadow: 0 0 5px #7b2ff7; }
-  100% { text-shadow: 0 0 15px #f72585; }
+@keyframes footerGlow{
+  0{text-shadow:0 0 5px #7b2ff7;}
+  100{text-shadow:0 0 15px #f72585;}
 }
 </style>
 </head>
-
 <body>
 
-<!-- 🌌 Header -->
+<!-- ───────────────────── Header ───────────────────── -->
 <div class="header">
   <div class="logo">COSMOS</div>
   <div class="subtitle">Calestia in motion</div>
 </div>
 
-<!-- 🌠 Grid -->
-<div id="gridContainer"></div>
-
-<!-- 🪞 Overlay -->
-<div id="overlay">
-  <button class="close-btn">&times;</button>
-  <iframe src="" id="iframe"></iframe>
+<!-- ───────────────────── Search & Publish ───────────────────── -->
+<div id="searchContainer">
+  <button id="backBtn">← Back</button>
+  <input type="text" id="searchInput" placeholder="Search by colour...">
+  <button id="searchBtn">Search</button>
+  <span id="arrowBtn">→</span>
+  <div id="arrowOptions">
+    <button class="arrow-option" id="searchByIdBtn">Search by ID</button>
+    <button class="arrow-option" id="searchByUsernameBtn">Search by Username</button>
+  </div>
+  <button id="publishBtn">PUBLISH</button>
 </div>
 
-<!-- ⚡ Footer -->
-<footer>Built with YAN ⚡</footer>
+<!-- ───────────────────── Grid ───────────────────── -->
+<div id="gridContainer"></div>
+
+<!-- ───────────────────── Overlay ───────────────────── -->
+<div id="overlay">
+  <button class="close-btn">&times;</button>
+  <iframe src="" id="iframe" allow="fullscreen;clipboard-write;camera;microphone;"></iframe>
+</div>
+
+<!-- ───────────────────── Floating Chat ───────────────────── -->
+<button class="chat-btn" id="chatBtn">💬</button>
+
+<!-- ───────────────────── Feedback Modal ───────────────────── -->
+<div id="feedbackModal" class="feedback-modal">
+  <div class="feedback-content">
+    <p class="feedback-message">
+      🔐 Login or sign up with GitHub to give the feedback.<br>
+      📺 Or <a href="https://archive.org/details/panfda" target="_blank" style="color:#ff6ec4;">click the video link</a> to know how to give feedback.
+    </p>
+    <div id="countdown">5</div>
+    <button id="closeFeedbackBtn" class="close-feedback-btn">&times;</button>
+  </div>
+</div>
+
+<!-- ───────────────────── Footer ───────────────────── -->
+<footer>© 2026  COSMOS · Built with ❤️ by YAN</footer>
 
 <script>
+/* ───────────────────── JavaScript ───────────────────── */
 const BACKEND_URL = "https://github_websites_displaying_backend.video-api-ajaiahar.workers.dev";
+const SHARE_BASE_URL = "https://yan-1-related-1.github.io/yan-1-website-shared-links-redirecting/websites-publishing-page-shared-links-redirecting.html?web_id=";
 
-async function fetchData() {
-  try {
+let masterData = [];      // full data set
+let currentData = [];     // data currently rendered
+let countdownTimer;
+
+// ---------- Fetch and initialise ----------
+async function fetchData(){
+  try{
     const res = await fetch(BACKEND_URL);
     const data = await res.json();
-    if (!Array.isArray(data)) {
-      console.error("Data is not an array:", data);
+    if(!Array.isArray(data)){
+      console.error("Data is not an array:",data);
       return;
     }
+    masterData = data;
 
-    // ✅ Always show id=1 item first, others random
-    const firstItem = data.find(item => item.id === 1);
-    const others = data.filter(item => item.id !== 1);
-
-    // Shuffle others
-    for (let i = others.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [others[i], others[j]] = [others[j], others[i]];
-    }
-
-    const finalData = firstItem ? [firstItem, ...others] : others;
-    displayData(finalData);
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-}
-
-function displayData(data) {
-  const container = document.getElementById("gridContainer");
-  container.innerHTML = "";
-
-  data.forEach((item, index) => {
-    if (!item.username || !item.website_url || !item.description) return;
-
-    const gridItem = document.createElement("div");
-    gridItem.className = index === 0 ? "grid-item first" : "grid-item other";
-    if (index !== 0 && item.colour) gridItem.style.background = item.colour;
-    if (index !== 0 && !item.video_url) gridItem.classList.add('shrink');
-
-    let html = "";
-    if (item.image_url) html += `<img src="${item.image_url}" alt="image">`;
-    if (item.stars && item.stars > 0) {
-      html += '<div class="stars">';
-      for (let i = 0; i < item.stars; i++) html += `<span class="star">&#9733;</span>`;
-      html += '</div>';
-    }
-
-    html += `<div class="username">${item.username}${item.id ? ` (${item.id})` : ''}</div>`;
-    if (item.official_page) html += `<div class="official_page">${item.official_page}</div>`;
-    html += `<div class="description">${item.description}</div>`;
-    if (item.others) html += `<div class="others">${item.others}</div>`;
-
-    // 🎥 Video logic
-    if (item.video_url) {
-      if (item.id === 1) {
-        html += `<video src="${item.video_url}" muted autoplay loop controls style="border-radius:15px; margin-top:6px;"></video>`;
-      } else {
-        html += `<video src="${item.video_url}" controls style="border-radius:15px; margin-top:6px;"></video>`;
+    // If a web_id is in the URL, jump straight to that item
+    const params = new URLSearchParams(window.location.search);
+    const webId = params.get('web_id');
+    if(webId){
+      const item = masterData.find(it => it.id && it.id.toString()===webId);
+      if(item){
+        displayData([item]);
+        openOverlay(item.website_url);
+        return;
       }
     }
 
+    displayData(masterData);
+  }catch(err){
+    console.error("Error fetching data:",err);
+  }
+}
+
+// ---------- Render grid ----------
+function displayData(data){
+  const container = document.getElementById('gridContainer');
+  container.innerHTML = '';
+  currentData = data;
+
+  if (!data.length){
+    container.innerHTML = '<p style="margin:0;color:#fff;">No results found.</p>';
+    return;
+  }
+
+  data.forEach((item,index)=>{
+    if(!item.username||!item.website_url||!item.description) return;
+
+    const gridItem = document.createElement('div');
+    gridItem.className = index===0 ? 'grid-item first' : 'grid-item other';
+    if(index!==0 && item.colour) gridItem.style.background = item.colour;
+    if(index!==0 && !item.video_url) gridItem.classList.add('shrink');
+
+    let html = '';
+    if(item.image_url) html += `<img src="${item.image_url}" alt="image">`;
+    if(item.stars&&item.stars>0){
+      html += '<div class="stars">';
+      for(let i=0;i<item.stars;i++) html += `<span class="star">&#9733;</span>`;
+      html += '</div>';
+    }
+
+    html += `<div class="username">${item.username}${item.id?` (${item.id})`:""}</div>`;
+    if(item.official_page) html += `<div class="official_page">${item.official_page}</div>`;
+    html += `<div class="description">${item.description}</div>`;
+    if(item.others) html += `<div class="others">${item.others}</div>`;
+
+    if(item.video_url){
+      const attrs = item.id===1? 'muted autoplay loop' : '';
+      html += `<video src="${item.video_url}" ${attrs} controls style="border-radius:15px;margin-top:6px;"></video>`;
+    }
+
     html += `<button class="open-btn">Open</button>`;
+    html += `<button class="share-btn" title="Share">🔗</button>`;
+
     gridItem.innerHTML = html;
     container.appendChild(gridItem);
 
-    gridItem.querySelector(".open-btn").addEventListener("click", () => {
-      const overlay = document.getElementById("overlay");
-      const iframe = document.getElementById("iframe");
-      iframe.src = item.website_url;
-      overlay.style.display = "flex";
+    // Open button
+    gridItem.querySelector('.open-btn').addEventListener('click',()=>{
+      openOverlay(item.website_url);
+    });
+
+    // Share button
+    gridItem.querySelector('.share-btn').addEventListener('click', async ()=>{
+      const shareLink = SHARE_BASE_URL + item.id;
+      try{
+        if(navigator.share){
+          await navigator.share({
+            title: item.username,
+            text: item.description,
+            url: shareLink
+          });
+          alert('Link shared via browser share.');
+        }else{
+          await navigator.clipboard.writeText(shareLink);
+          alert('Share link copied to clipboard.');
+        }
+      }catch(e){
+        alert('Could not share: '+e.message);
+      }
     });
   });
 }
 
-// Close overlay
-document.querySelector('#overlay .close-btn').addEventListener('click', () => {
-  const overlay = document.getElementById('overlay');
-  const iframe = document.getElementById('iframe');
-  iframe.src = '';
-  overlay.style.display = 'none';
+// ---------- Overlay ----------
+function openOverlay(url){
+  const overlay=document.getElementById('overlay');
+  const iframe=document.getElementById('iframe');
+  iframe.src=url;
+  overlay.style.display='flex';
+}
+function closeOverlay(){
+  const overlay=document.getElementById('overlay');
+  const iframe=document.getElementById('iframe');
+  iframe.src='';
+  overlay.style.display='none';
+}
+document.querySelector('#overlay .close-btn').addEventListener('click',closeOverlay);
+
+// ---------- Search ----------
+const backBtn=document.getElementById('backBtn');
+backBtn.addEventListener('click',()=>{
+  displayData(masterData);
+  backBtn.style.display='none';
 });
 
+document.getElementById('searchBtn').addEventListener('click',()=>{
+  const kw=document.getElementById('searchInput').value.trim().toLowerCase();
+  if(!kw){
+    displayData(masterData);
+    backBtn.style.display='none';
+    return;
+  }
+  const filtered=masterData.filter(it=>it.colour&&it.colour.toLowerCase().includes(kw));
+  displayData(filtered);
+  backBtn.style.display='inline-block';
+  hideArrowOptions();
+});
+
+document.getElementById('searchByIdBtn').addEventListener('click',()=>{
+  const val=document.getElementById('searchInput').value.trim();
+  if(!val){alert('Please enter an ID');return;}
+  const id=parseInt(val,10);
+  const found=masterData.find(it=>it.id===id);
+  displayData(found? [found]:[]);
+  backBtn.style.display='inline-block';
+  hideArrowOptions();
+});
+
+document.getElementById('searchByUsernameBtn').addEventListener('click',()=>{
+  const kw=document.getElementById('searchInput').value.trim().toLowerCase();
+  if(!kw){alert('Please enter a username');return;}
+  const results=masterData.filter(it=>it.username&&it.username.toLowerCase().includes(kw));
+  displayData(results);
+  backBtn.style.display='inline-block';
+  hideArrowOptions();
+});
+
+// Arrow options
+const arrowBtn=document.getElementById('arrowBtn');
+const arrowOptions=document.getElementById('arrowOptions');
+arrowBtn.addEventListener('click',()=>arrowOptions.style.display=arrowOptions.style.display==='none'||!arrowOptions.style.display?'block':'none');
+function hideArrowOptions(){arrowOptions.style.display='none';}
+document.addEventListener('click',e=>{
+  if(!arrowOptions.contains(e.target)&&e.target!==arrowBtn) hideArrowOptions();
+});
+
+// ---------- Publish ----------
+document.getElementById('publishBtn').addEventListener('click',()=>openOverlay('websites_publishing.html'));
+
+// ---------- Feedback modal ----------
+const chatBtn=document.getElementById('chatBtn');
+const feedbackModal=document.getElementById('feedbackModal');
+const countdownEl=document.getElementById('countdown');
+const closeFeedbackBtn=document.getElementById('closeFeedbackBtn');
+
+chatBtn.addEventListener('click',()=>{
+  feedbackModal.style.display='flex';
+  let counter=5;
+  countdownEl.textContent=counter;
+  countdownTimer=setInterval(()=>{
+    counter--;
+    if(counter>0) countdownEl.textContent=counter;
+    else{
+      clearInterval(countdownTimer);
+      window.location.href='https://github.com/OpenThoughtVoice/OpenThoughtVoice/discussions/13';
+    }
+  },1000);
+});
+
+closeFeedbackBtn.addEventListener('click',()=>{
+  feedbackModal.style.display='none';
+  if(countdownTimer) clearInterval(countdownTimer);
+});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape' && feedbackModal.style.display==='flex'){
+    feedbackModal.style.display='none';
+    if(countdownTimer) clearInterval(countdownTimer);
+  }
+});
+
+// ---------- Initialise ----------
 fetchData();
 </script>
-
 </body>
 </html>
