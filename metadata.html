@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🌐 Publish Your Website</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * {margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+  body {
+    background: linear-gradient(135deg,#ffecd2,#fcb69f,#ff6f91);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    color: #1e293b;
+    padding: 0 1rem;
+    transition: background 0.5s;
+  }
+  header {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+  @keyframes glow {
+    0% { text-shadow: 0 0 5px #fff, 0 0 10px #ff6f91, 0 0 15px #ffecd2;}
+    50% { text-shadow: 0 0 10px #fff, 0 0 20px #ff6f91, 0 0 30px #ffecd2;}
+    100% { text-shadow: 0 0 5px #fff, 0 0 10px #ff6f91, 0 0 15px #ffecd2;}
+  }
+  .subtitle {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    color: #fff;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    animation: pulse 2s infinite alternate;
+  }
+  @keyframes pulse {
+    0% { color: #fff; text-shadow: 0 0 5px #ff9a9e;}
+    50% { color: #ffe6f0; text-shadow: 0 0 15px #ff6f91;}
+    100% { color: #fff; text-shadow: 0 0 5px #ff9a9e;}
+  }
+  .container {
+    width: 100%;
+    max-width: 500px;
+    background: rgba(255,255,255,0.9);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    margin-bottom: 2rem;
+    transition: transform 0.3s;
+  }
+  .container:hover { transform: translateY(-5px); }
+  input[type="text"], input[type="url"], textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: 0.3s;
+  }
+  input[type="text"]:focus, input[type="url"]:focus, textarea:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 10px #10b98150;
+  }
+  button {
+    background: linear-gradient(45deg,#10b981,#06b6d4);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 5px 0;
+    font-weight: 600;
+    transition: 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    background: linear-gradient(45deg,#06b6d4,#10b981);
+  }
+  .back-btn { background: linear-gradient(45deg,#6b7280,#3b82f6); }
+  .message { margin-top: 1rem; font-weight: 500; font-size: 0.95rem; }
+  .result-item {
+    background: linear-gradient(135deg,#fef9c3,#fcd34d,#f87171);
+    padding: 12px;
+    border-radius: 12px;
+    margin: 10px 0;
+    text-align: left;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    transition: transform 0.3s;
+    cursor: pointer;
+  }
+  .result-item:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+  a { color: #1d4ed8; text-decoration: none; font-weight: 600; }
+  a:hover { text-decoration: underline; }
+
+  /* Fullscreen iframe modal */
+  #iframeModal {
+    display: none;
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+  #iframeModal iframe {
+    width: 100%; height: 100%;
+    border: none;
+  }
+  #iframeModal button {
+    position: absolute;
+    top: 20px; right: 20px;
+    background: #ef4444;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+  }
+</style>
+</head>
+<body>
+<header>🌐 Publish Your Website</header>
+<div class="subtitle">Let your creation find its place on the web</div>
+
+<!-- Main Page -->
+<div class="container" id="mainPage">
+  <input type="text" id="searchBar" placeholder="🔍 Enter ID or Username to search..." />
+  <br>
+  <button id="searchBtn">Search</button>
+  <button id="publishBtn">📤 Publish</button>
+  <div class="message" id="searchMessage"></div>
+  <div id="searchResults"></div>
+</div>
+
+<!-- Publish Page -->
+<div class="container" id="publishPage">
+  <h2 style="text-align:center;color:#10b981;">Publish New Website</h2>
+  <input type="url" id="website_url" placeholder="Enter GitHub URL" required />
+  <input type="text" id="username" placeholder="Enter Username" required />
+  <textarea id="description" maxlength="40" placeholder="Enter Description (max 40 chars)"></textarea>
+  <br>
+  <button id="postBtn">Post</button>
+  <div class="message" id="publishMessage"></div>
+  <button class="back-btn" id="backBtn">⬅ Back</button>
+</div>
+
+<!-- Fullscreen iframe modal -->
+<div id="iframeModal">
+  <button id="closeIframe">✖ Close</button>
+  <iframe id="iframeContent" allow="camera;microphone;clipboard-write;clipboard-read;fullscreen;geolocation;autoplay;payment;"></iframe>
+</div>
+
+<script>
+const mainPage = document.getElementById("mainPage");
+const publishPage = document.getElementById("publishPage");
+const publishBtn = document.getElementById("publishBtn");
+const backBtn = document.getElementById("backBtn");
+const postBtn = document.getElementById("postBtn");
+const searchBtn = document.getElementById("searchBtn");
+const searchBar = document.getElementById("searchBar");
+const searchMessage = document.getElementById("searchMessage");
+const searchResults = document.getElementById("searchResults");
+const publishMessage = document.getElementById("publishMessage");
+
+const iframeModal = document.getElementById("iframeModal");
+const iframeContent = document.getElementById("iframeContent");
+const closeIframe = document.getElementById("closeIframe");
+
+const WORKER_URL = "https://github_websites_metadata_backend.video-api-ajaiahar.workers.dev";
+
+// Navigate to Publish Page
+publishBtn.addEventListener("click", () => {
+  mainPage.style.display = "none";
+  publishPage.style.display = "block";
+  publishMessage.textContent = "";
+});
+
+// Back button
+backBtn.addEventListener("click", () => {
+  publishPage.style.display = "none";
+  mainPage.style.display = "block";
+  publishMessage.textContent = "";
+});
+
+// POST new GitHub website
+postBtn.addEventListener("click", async () => {
+  const website_url = document.getElementById("website_url").value.trim();
+  const username = document.getElementById("username").value.trim();
+  const description = document.getElementById("description").value.trim().substring(0, 40);
+
+  if (!website_url || !username || !description) {
+    publishMessage.textContent = "⚠️ Please fill all fields.";
+    publishMessage.style.color = "red";
+    return;
+  }
+
+  // Allow GitHub repository URLs or GitHub Pages URLs
+  if (!/^https?:\/\/(www\.)?github\.com\/[A-Za-z0-9_.-]+(\/.*)?$/.test(website_url) &&
+      !/^https?:\/\/[A-Za-z0-9_.-]+\.github\.io(\/.*)?$/.test(website_url)) {
+    publishMessage.textContent = "❌ Only GitHub repository or GitHub Pages URLs are allowed.";
+    publishMessage.style.color = "red";
+    return;
+  }
+
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ website_url, username, description })
+    });
+
+    const result = await res.json();
+    if (res.ok) {
+      publishMessage.textContent = "✅ " + result.message;
+      publishMessage.style.color = "green";
+      document.getElementById("website_url").value = "";
+      document.getElementById("username").value = "";
+      document.getElementById("description").value = "";
+    } else {
+      publishMessage.textContent = "❌ " + (result.error || "Failed to post.");
+      publishMessage.style.color = "red";
+    }
+  } catch (error) {
+    publishMessage.textContent = "❌ Network error: " + error.message;
+    publishMessage.style.color = "red";
+  }
+});
+
+// GET search by ID or Username
+searchBtn.addEventListener("click", async () => {
+  const query = searchBar.value.trim();
+  searchMessage.textContent = "";
+  searchResults.innerHTML = "";
+
+  if (!query) {
+    searchMessage.textContent = "⚠️ Please enter an ID or username to search.";
+    searchMessage.style.color = "red";
+    return;
+  }
+
+  const isId = !isNaN(query) && query !== "";
+  const params = isId ? `id=${query}` : `username=${encodeURIComponent(query)}`;
+  const requestUrl = `${WORKER_URL}?${params}`;
+
+  try {
+    const res = await fetch(requestUrl);
+    const result = await res.json();
+
+    if (res.ok) {
+      if (result.length === 0) {
+        searchMessage.textContent = "❌ No records found.";
+        searchMessage.style.color = "red";
+        return;
+      }
+
+      searchMessage.textContent = `✅ Found ${result.length} record(s).`;
+      searchMessage.style.color = "green";
+
+      result.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "result-item";
+        div.innerHTML = `
+          <strong>ID:</strong> ${item.id} <br>
+          <strong>Username:</strong> ${item.username} <br>
+          <strong>Website:</strong> ${item.website_url} <br>
+          <strong>Description:</strong> ${item.description}
+        `;
+        div.addEventListener('click', () => {
+          iframeContent.src = item.website_url;
+          iframeModal.style.display = 'flex';
+        });
+        searchResults.appendChild(div);
+      });
+    } else {
+      searchMessage.textContent = "❌ " + (result.error || "No results found.");
+      searchMessage.style.color = "red";
+    }
+  } catch (error) {
+    searchMessage.textContent = "❌ Network error: " + error.message;
+    searchMessage.style.color = "red";
+  }
+});
+
+// Close iframe modal
+closeIframe.addEventListener('click', () => {
+  iframeModal.style.display = 'none';
+  iframeContent.src = '';
+});
+</script>
+</body>
+</html>
